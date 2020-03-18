@@ -2,17 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-// class Square extends React.Component {
-//     render() {
-//         return (
-//             <button className="square"
-//                 onClick={() => { this.props.onClick() }}>
-//                 {this.props.value}
-//             </button>
-//         );
-//     }
-// }
-
 function Square(props) {
     return (
         <button className="square"
@@ -23,14 +12,6 @@ function Square(props) {
 }
 
 class Board extends React.Component {
-    // constructor(props) {
-    //     super(props)
-    //     this.state = {
-    //         squares: Array(9).fill(null),
-    //         xIsNext: true,
-    //     };
-    // }
-
     renderSquare(i) {
         return <Square
             value={this.props.squares[i]}
@@ -38,14 +19,6 @@ class Board extends React.Component {
     }
 
     render() {
-        // const winner = calculateWinner(this.props.squares);
-        // let status;
-        // if (winner) {
-        //     status = 'Winner: ' + winner;
-        // } else {
-        //     status = 'Next player:  ' + (this.state.xIsNext ? 'X' : 'O');
-        // }
-
         return (
             <div>
                 <div className="board-row">
@@ -74,6 +47,7 @@ class Game extends React.Component {
         this.state = {
             history: [{
                 squares: Array(9).fill(null),
+                coord: { x: null, y: null },
             }],
             setpNumber: 0,
             xIsNext: true,
@@ -89,7 +63,7 @@ class Game extends React.Component {
         }
         squares[i] = this.state.xIsNext ? 'X' : 'O';
         this.setState({
-            history: history.concat([{ squares: squares, }]),
+            history: history.concat([{ squares: squares, coord: { x: parseInt(i / 3), y: i % 3 }, }]),
             setpNumber: history.length,
             xIsNext: !this.state.xIsNext,
         });
@@ -97,6 +71,7 @@ class Game extends React.Component {
 
     jumpTo(step) {
         this.setState({
+            history: this.state.history.slice(0, step + 1),
             setpNumber: step,
             xIsNext: (step % 2) === 0,
         });
@@ -110,7 +85,7 @@ class Game extends React.Component {
         // 设置历史步骤跳转
         const moves = history.map((move, step) => { // move 自动生成的标号
             const desc = step ?
-                'Go to move #' + step : 'Go to game start';
+                'Go to move #' + step + ',\t(' + move.coord.x + ',' + move.coord.y + ')' : 'Go to game start';
             return (
                 // li对象需要key作为唯一标记
                 <li key={step}>
