@@ -19,23 +19,20 @@ class Board extends React.Component {
     }
 
     render() {
+        let rows = [];
+        for (let y = 0; y < 3; y++) {
+            let cols = [];
+            for (let x = 0; x < 3; x++) {
+                cols.push(this.renderSquare(y * 3 + x));
+            }
+            rows.push(<div className="board-row">{cols}</div>)
+        }
+        for (let y = 0; y < 3; y++) {
+
+        }
         return (
             <div>
-                <div className="board-row">
-                    {this.renderSquare(0)}
-                    {this.renderSquare(1)}
-                    {this.renderSquare(2)}
-                </div>
-                <div className="board-row">
-                    {this.renderSquare(3)}
-                    {this.renderSquare(4)}
-                    {this.renderSquare(5)}
-                </div>
-                <div className="board-row">
-                    {this.renderSquare(6)}
-                    {this.renderSquare(7)}
-                    {this.renderSquare(8)}
-                </div>
+                {rows}
             </div>
         );
     }
@@ -137,9 +134,69 @@ function calculateWinner(squares) {
     return null;
 }
 
+class Clock extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { date: new Date() };
+    }
+
+    componentDidMount() {
+        this.timerID = setInterval(() => this.tick(), 1000);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.timerID);
+    }
+
+    tick() {
+        this.setState({
+            date: new Date()
+        });
+    }
+    render() {
+        return (
+            <div>
+                <h1>Hello, world!</h1>
+                <h2>It is {this.state.date.toLocaleTimeString()}</h2>
+            </div>
+        );
+    }
+}
+
+
+class Toggle extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { isToggleOn: true };
+
+        // 事件回调，需要绑定this
+        // this.handleClick = this.handleClick.bind(this);
+    }
+
+    handleClick = () => {
+        this.setState(state => ({
+            isToggleOn: !state.isToggleOn //箭头函数 同时用小括号包住函数体，成为函数表达式，可以直接执行
+        }));
+    }
+
+    render() {
+        return (
+            <button onClick={this.handleClick}>
+                {this.state.isToggleOn ? 'ON' : "OFF"}
+            </button>
+        );
+    }
+}
+
 // ========================================
 
 ReactDOM.render(
-    <Game />,
+
+    <div>
+        <Clock />
+        <Game />
+        <Toggle />
+    </div>,
+
     document.getElementById('root')
 );
